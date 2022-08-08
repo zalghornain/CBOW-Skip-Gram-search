@@ -1,5 +1,8 @@
 import mysql.connector
 import unidecode
+import time
+
+startTime = time.time()
 
 sourcedb = mysql.connector.connect(
   host="localhost",
@@ -70,6 +73,7 @@ print("creating unique word dictionary...")
 #bikin database dictionary unique word
 setkata = set()
 kata = ""
+jumlahKata = 0
 #bigdata  = "atlético atlético atlético asdfgasgas asdfasdf 2 f2g22g2gs ssafaf "
 
 for x in range(len(bigdata)):
@@ -80,18 +84,22 @@ for x in range(len(bigdata)):
   if x == len(bigdata)-1:
     kata = kata.replace(" ", "")
     setkata.add(kata)
+    jumlahKata += 1
     break
 
   if bigdata[x] == " ":
     kata = kata.replace(" ", "")
     setkata.add(kata)
+    jumlahKata += 1
     #empty-in lagi variable kata
     kata =""
 
 #masukkin kata unique ke dalem database
 #KELEMAHAN, CUMA BISA DIJALANIN SEKALI, KALO BUAT UPDATE MASUKKIN KATA UNIQUE BARU GAK BISA, KARENA DIA NGECHECK UNIQUENYA YANG SEKARANG LAGI DI PROSES DOANG KATANYA (DARI DATABASE CRAWL)
 #HARUS DI CLEAR DULU DATA DICTIONARYNYA
+jumlahKataUnik = 0
 for x in setkata:
+  jumlahKataUnik += 1
   sql = "INSERT INTO dictionary (kata) VALUES (%s)"
   val = (x,)
   targetcursor.execute(sql, val)
@@ -121,6 +129,12 @@ for x in range(len(listonehotencode)):
   val = (str(listonehotencode[x]),x+1)
   targetcursor.execute(sql, val)
   targetdb.commit()
+
+
+print('Jumlah Kata Tak Unik : ' + str(jumlahKata))
+print('Jumlah Kata Unik : ' + str(jumlahKataUnik))
+waktuJalan = (time.time() - startTime)
+print('Waktu yang dibutuhkan : ' + str(waktuJalan))
 
 
 #MULAI TRAINING
