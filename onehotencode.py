@@ -2,7 +2,8 @@ import mysql.connector
 import unidecode
 import time
 
-startTime = time.time()
+startAwalTime = time.time()
+startTime = startAwalTime
 
 sourcedb = mysql.connector.connect(
   host="localhost",
@@ -33,108 +34,83 @@ targetcursor = targetdb.cursor()
 bigdata = ""
 
 print("cleaning double whitespace...")
-i = 0
 #tuple database isinya [sumber artikel(link)][isi artikel]
-while i < len(tupledatabase):
+for x in range(len(tupledatabase)):
 
-  #hapus whitespace di paragraph isi artikel kalo dia double/lebih
   #ubah data character unicode
-  stringvalue = unidecode.unidecode(tupledatabase[i][1])
+  stringvalue = unidecode.unidecode(tupledatabase[x][1])
   stringvalue = stringvalue.lower()
   stringvalue = stringvalue.replace(",", " ")
-  c =""
-  for x in range(len(stringvalue)-1):
-      if stringvalue[x] == " " and stringvalue[x+1] == " ":
-          continue
-      c = c + stringvalue[x]
-
-  stringvalue = c
+  stringvalue = stringvalue.replace(".", " ")
+  #hapus whitespace di paragraph isi artikel kalo dia double/lebih
+  stringvalue = ' '.join(stringvalue.split())
   bigdata += stringvalue
   
   #pindahin data dari database fathan + string yang udah dibersihin double/lebih whitespacenya ke database baru (tempat processing data kita)
   sql = "INSERT INTO text (sumber_url, content) VALUES (%s, %s)"
-  val = (tupledatabase[i][0],stringvalue)
+  val = (tupledatabase[x][0],stringvalue)
   targetcursor.execute(sql, val)
   targetdb.commit()
-  i = i+1
+print('Waktu yang dibutuhkan : ' + str(time.time() - startTime))
+print()
+startTime = time.time()
 
 print("compiling data...")
 #pindahin kumpulan semua string ke table baru
 sql = "INSERT INTO big_data (compiled_string) VALUES (%s)"
-val = (bigdata.lower(),)
+val = (bigdata,)
 targetcursor.execute(sql, val)
 targetdb.commit()
+print('Waktu yang dibutuhkan : ' + str(time.time() - startTime))
+print()
+startTime = time.time()
 
 #perlu bikin biar wordnya gak duplicate dulu baru dimasukkin ke dalem database kayaknya
-#terus hapus IGNORE nya
-#bikin set mungkin, nanti tinggal set.add, abis itu masukkin databasenya set[x] aja gak perlu di rotasi per char lagi
-
 print("creating unique word dictionary...")
 #bikin database dictionary unique word
-setkata = set()
-kata = ""
-jumlahKata = 0
 #bigdata  = "atlético atlético atlético asdfgasgas asdfasdf 2 f2g22g2gs ssafaf "
+listKata = bigdata.split()
+listKataUnik = list(dict.fromkeys(listKata))
+print('Jumlah Kata Tak Unik : ' + str(len(listKata)))
+print('Jumlah Kata Unik : ' + str(len(listKataUnik)))
+print('Waktu yang dibutuhkan : ' + str(time.time() - startTime))
+print()
+startTime = time.time()
 
-for x in range(len(bigdata)):
-  #perkarakter
-  kata = kata + bigdata[x]
-
-  #buat cek kata terakhir
-  if x == len(bigdata)-1:
-    kata = kata.replace(" ", "")
-    setkata.add(kata)
-    jumlahKata += 1
-    break
-
-  if bigdata[x] == " ":
-    kata = kata.replace(" ", "")
-    setkata.add(kata)
-    jumlahKata += 1
-    #empty-in lagi variable kata
-    kata =""
-
-#masukkin kata unique ke dalem database
-#KELEMAHAN, CUMA BISA DIJALANIN SEKALI, KALO BUAT UPDATE MASUKKIN KATA UNIQUE BARU GAK BISA, KARENA DIA NGECHECK UNIQUENYA YANG SEKARANG LAGI DI PROSES DOANG KATANYA (DARI DATABASE CRAWL)
-#HARUS DI CLEAR DULU DATA DICTIONARYNYA
-jumlahKataUnik = 0
-for x in setkata:
-  jumlahKataUnik += 1
-  sql = "INSERT INTO dictionary (kata) VALUES (%s)"
-  val = (x,)
-  targetcursor.execute(sql, val)
-  targetdb.commit()
-
-#kita gak perlu peduli ordered atau nggaknya, kita langsung input ke dalem database aja one hot encodenya
+#tuple berisi (kataUnik, one_hot_encode)
+kataUnikDanOneHotEncode = []
+#kita gak perlu peduli ordered atau nggaknya, one hot encode + kata langsung di ram
 #print(len(setkata))
 print("one-hot-encoding words...")
 onehotencode = []
-listonehotencode = []
 i = 0
-for x in range(len(setkata)):
-  while i < len(setkata) :
+for x in range(len(listKataUnik)):
+  while i < len(listKataUnik) :
     onehotencode.append(0)
     i+=1
   onehotencode[x] = 1
   #print(onehotencode)
-  listonehotencode.append(onehotencode)
+  kataUnikDanOneHotEncode.append((listKataUnik[x], str(onehotencode)))
   i=0
   onehotencode = []
-  
-#print(listonehotencode)
-print("saving one-hot-encode...")
-#masukkin one hot encode ke database
-for x in range(len(listonehotencode)):
-  sql = "UPDATE dictionary SET one_hot_encode = %s WHERE id = %s"
-  val = (str(listonehotencode[x]),x+1)
-  targetcursor.execute(sql, val)
-  targetdb.commit()
+print('Waktu yang dibutuhkan : ' + str(time.time() - startTime))
+print()
+startTime = time.time()
 
+print("saving unique word to database...")
+#masukkin kata unique ke dalem database
+#KELEMAHAN, CUMA BISA DIJALANIN SEKALI, KALO BUAT UPDATE MASUKKIN KATA UNIQUE BARU GAK BISA, KARENA DIA NGECHECK UNIQUENYA YANG SEKARANG LAGI DI PROSES DOANG KATANYA (DARI DATABASE CRAWL)
+#HARUS DI CLEAR DULU DATA DICTIONARYNYA
+sql = "INSERT INTO dictionary (kata , one_hot_encode) VALUES (%s, %s)"
+val = kataUnikDanOneHotEncode
+targetcursor.executemany(sql, val)
+targetdb.commit()
+print('Waktu yang dibutuhkan : ' + str(time.time() - startTime))
+print()
+startTime = time.time()
 
-print('Jumlah Kata Tak Unik : ' + str(jumlahKata))
-print('Jumlah Kata Unik : ' + str(jumlahKataUnik))
-waktuJalan = (time.time() - startTime)
-print('Waktu yang dibutuhkan : ' + str(waktuJalan))
+waktuJalan = (time.time() - startAwalTime)
+print('Waktu total yang dibutuhkan : ' + str(waktuJalan))
 
 
 #MULAI TRAINING
