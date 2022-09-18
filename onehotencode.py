@@ -70,6 +70,7 @@ print("creating unique word dictionary...")
 #bikin database dictionary unique word
 #bigdata  = "atlético atlético atlético asdfgasgas asdfasdf 2 f2g22g2gs ssafaf "
 listKata = bigdata.split()
+listKata.sort()
 listKataUnik = list(dict.fromkeys(listKata))
 print('Jumlah Kata Tak Unik : ' + str(len(listKata)))
 print('Jumlah Kata Unik : ' + str(len(listKataUnik)))
