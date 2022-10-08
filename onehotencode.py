@@ -42,6 +42,13 @@ for x in range(len(tupledatabase)):
   stringvalue = stringvalue.lower()
   stringvalue = stringvalue.replace(",", " ")
   stringvalue = stringvalue.replace(".", " ")
+  stringvalue = stringvalue.replace("\"","")
+  stringvalue = stringvalue.replace("#","")
+  stringvalue = stringvalue.replace("&","")
+  stringvalue = stringvalue.replace("'","")
+  stringvalue = stringvalue.replace("(","")
+  stringvalue = stringvalue.replace(")","")
+  stringvalue = stringvalue.replace("@","")
   #hapus whitespace di paragraph isi artikel kalo dia double/lebih
   stringvalue = ' '.join(stringvalue.split())
   bigdata += stringvalue
@@ -68,7 +75,7 @@ startTime = time.time()
 #perlu bikin biar wordnya gak duplicate dulu baru dimasukkin ke dalem database kayaknya
 print("creating unique word dictionary...")
 #bikin database dictionary unique word
-#bigdata  = "atlético atlético atlético asdfgasgas asdfasdf 2 f2g22g2gs ssafaf "
+#bigdata  = "saya sedang bermain budi sedang makan "
 listKata = bigdata.split()
 listKata.sort()
 listKataUnik = list(dict.fromkeys(listKata))
