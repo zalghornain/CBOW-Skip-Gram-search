@@ -1,6 +1,6 @@
 import mysql.connector
 import numpy as np
-import collections
+import time
 
 sourcedb = mysql.connector.connect(
   host="localhost",
@@ -27,6 +27,7 @@ for i in range(len(myresult)):
   dictionaryvectorkata[myresult[i][0]] = intvektorkata
 
 katainput = input('Masukkan kata \n')
+startAwalTime = time.time()
 print(katainput.split())
 katainput = katainput.split()
 print(len(katainput))
@@ -81,3 +82,5 @@ elif len(katainput) > 1 :
   fivetopdict = sorted(listcosinesimilarity.items(), key=lambda item: item[1], reverse=True)[0:5]
 print("5 kata paling mirip : \n",fivetopdict)
 print()
+waktuJalan = (time.time() - startAwalTime)
+print('Waktu total yang dibutuhkan : ' + str(waktuJalan))
