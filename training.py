@@ -222,23 +222,30 @@ print("weight matrix input yang akan di masukkan ke database :\n", weightinputba
 print()
 print("weight matrix output yang akan di masukkan ke database :\n", weightoutputbaru)
 print()
-sql = "INSERT INTO weight (matrix_weight_input, matrix_weight_output) VALUES (%s,%s)"
+sql = "INSERT INTO weight (metode, matrix_weight_input, matrix_weight_output) VALUES (%s, %s, %s)"
 #set threshold sebelum di simpen ke database biar gak di truncate
 #supress biar dia gak di singkat jadi e-01
 np.set_printoptions(threshold=sys.maxsize,suppress=True)
-val = (np.array2string(weightinputmatrix),np.array2string(weightoutputmatrix))
+val = ("skip-gram", np.array2string(weightinputmatrix), np.array2string(weightoutputmatrix))
 sourcecursor.execute(sql, val)
 sourcedb.commit()
 print('Waktu yang dibutuhkan untuk memasukkan weight ke database : ' + str(time.time() - startTime))
 print()
 
 
+#input vektor kata ke dalem database setelah semua data selesai di train
+#tuple berisi (vektor kata, kata)
+startTime = time.time()
+vektordankata = []
+for x in range(jumlahkatadictionary):
+    vektordankata.append((str(weightinputmatrix[x]),myresult[x][0]))
+
+sql = "UPDATE dictionary SET vector_skip_gram = %s WHERE kata = %s"
+val = vektordankata
+sourcecursor.executemany(sql, val)
+sourcedb.commit()
+print('Waktu yang dibutuhkan untuk memasukkan vektor per kata ke database : ' + str(time.time() - startTime))
+print()
+
 waktuJalan = (time.time() - startAwalTime)
 print('Waktu total yang dibutuhkan : ' + str(waktuJalan))
-
-#input vektor kata ke dalem database setelah semua data selesai di train
-for x in range(len(myresult)):
-    sql = "UPDATE dictionary SET vector_skip_gram = %s WHERE kata = %s"
-    val = (str(weightinputmatrix[x]),myresult[x][0])
-    sourcecursor.execute(sql, val)
-    sourcedb.commit()

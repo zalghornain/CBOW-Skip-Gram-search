@@ -2,6 +2,7 @@ from tkinter import E
 import numpy as np
 import mysql.connector
 import time
+import sys
 
 startAwalTime = time.time()
 
@@ -166,13 +167,36 @@ for x in range(len(bigdata)-2):
     #ganti weight output matrix lama dengan weight output matrix baru untuk kalkulasi selanjutnya
     weightoutputmatrix = weightoutputmatrixbaru
 
+
+#input weight matrix input dan output ke dalem database
 startTime = time.time()
+print("weight matrix input yang akan di masukkan ke database :\n", weightinputmatrix)
+print()
+print("weight matrix output yang akan di masukkan ke database :\n", weightoutputmatrix)
+print()
+sql = "INSERT INTO weight (metode, matrix_weight_input, matrix_weight_output) VALUES (%s,%s,%s)"
+#set threshold sebelum di simpen ke database biar gak di truncate
+#supress biar dia gak di singkat jadi e-01
+np.set_printoptions(threshold=sys.maxsize,suppress=True)
+val = ("cbow", np.array2string(weightinputmatrix), np.array2string(weightoutputmatrix))
+sourcecursor.execute(sql, val)
+sourcedb.commit()
+print('Waktu yang dibutuhkan untuk memasukkan weight ke database : ' + str(time.time() - startTime))
+print()
+
+
+#input vektor kata ke dalem database setelah semua data selesai di train
+#tuple berisi (vektor kata, kata)
+startTime = time.time()
+vektordankata = []
 for x in range(jumlahkatadictionary):
-    sql = "UPDATE dictionary SET vector_cbow = %s WHERE kata = %s"
-    val = (str(weightinputmatrix[x]),myresult[x][0])
-    sourcecursor.execute(sql, val)
-    sourcedb.commit()
-print('Waktu yang dibutuhkan untuk memasukkan data ke database : ' + str(time.time() - startTime))
+    vektordankata.append((str(weightinputmatrix[x]),myresult[x][0]))
+
+sql = "UPDATE dictionary SET vector_cbow = %s WHERE kata = %s"
+val = vektordankata
+sourcecursor.executemany(sql, val)
+sourcedb.commit()
+print('Waktu yang dibutuhkan untuk memasukkan vektor per kata ke database : ' + str(time.time() - startTime))
 print()
 
 waktuJalan = (time.time() - startAwalTime)
