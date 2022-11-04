@@ -28,9 +28,11 @@ for i in range(len(myresult)):
 
 katainput = input('Masukkan kata \n')
 startAwalTime = time.time()
+print()
 print(katainput.split())
+print()
 katainput = katainput.split()
-print(len(katainput))
+#print(len(katainput))
 listcosinesimilarity = {}
 jumlahkatavalid = 0
 for i in range(len(katainput)):
@@ -50,31 +52,43 @@ for i in range(len(katainput)):
       #kalo katanya cuma satu/kata pertama langsung input ke dalem listcosinesimilarity
       if i == 0:
         listcosinesimilarity[k] = hasildotproduct / (magnitudev * magnitudevectorkata)
+        #if k == "james" :
+        #  print("value untuk kata james di kata ke: ", i + 1 , " : ",  listcosinesimilarity[k])
+        #  print("value untuk kata james setelah di total: ",listcosinesimilarity.get("james"))
+        #  print()
       #kalo katanya ada banyak cari cosinesimilarity abis itu rata2in sama cosinesimilarity sebelumnya
       else:
         cosinesimilarity = hasildotproduct / (magnitudev * magnitudevectorkata)
-        if k == "james" :
-          print("value untuk kata james di kata ke: ", i , " : ",  cosinesimilarity)
-        #wait = input()
         #cosine similaritynya di tambah tambah dulu
-        listcosinesimilarity[k] = (listcosinesimilarity.get(k) + cosinesimilarity)
+        #kalo kata pertama yang di input nggak valid
+        if listcosinesimilarity.get(k) is None:
+          listcosinesimilarity[k] = cosinesimilarity
+        else:
+          listcosinesimilarity[k] = (listcosinesimilarity.get(k) + cosinesimilarity)
+        #if k == "james" :
+        #  print("value untuk kata james di kata ke: ", i + 1 , " : ",  cosinesimilarity)
+        #  print("value untuk kata james setelah di total: ",listcosinesimilarity.get("james"))
+        #  print()
+        
         #pas di kata terakhir di rata2in
         if i == len(katainput)-1:
           #rata-ratain berdasarkan jumlah kata yang ketemu di dictionary
           listcosinesimilarity[k] = listcosinesimilarity.get(k) / jumlahkatavalid
+          
       #print("perkalian antara \n",vectorkata,"\n dengan \n",v,"\n merupakan : \n",listcosinesimilarity[k])
       #print()
-      #print()
-    #wait = input("Press Enter to continue.")
-    if i != len(katainput)-1:
-      print("value untuk kata james setelah di total: ",listcosinesimilarity.get("james"))
-    print()
   else :
-    print("kata tidak ditemukan")
+    print("kata " + "\"" + katainput[i] + "\"" + " tidak ditemukan")
     print()
+    #kalo kata terakhir yang di input nggak valid
+    if i == len(katainput)-1:
+      for j, (k, v) in enumerate(dictionaryvectorkata.items()):
+        #rata-ratain berdasarkan jumlah kata yang ketemu di dictionary
+        listcosinesimilarity[k] = listcosinesimilarity.get(k) / jumlahkatavalid
 
 #kalo katanya satu munculin hasil tertinggi nomor 2 sampe 6 karena nomor 1 nya sama sama kata input
-print("value untuk kata james setelah di rata-ratakan", listcosinesimilarity.get("james"))
+#print("value untuk kata james setelah di rata-ratakan", listcosinesimilarity.get("james"))
+#print()
 if len(katainput) == 1 :
   fivetopdict = sorted(listcosinesimilarity.items(), key=lambda item: item[1], reverse=True)[1:6]
 #kalo katanya banyak munculin hasil tertinggi 1 sampe 5
