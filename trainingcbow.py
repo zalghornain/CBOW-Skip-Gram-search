@@ -28,6 +28,8 @@ jumlahhiddenlayer = int(input("Enter number of dimension: "))
 
 learningRate = float(input("Masukkan learning rate: "))
 
+jumlahIterasi = int(input("Masukkan jumlah iterasi: "))
+
 #Inisiasi Weight Input (lower bound 1, higher bound 4)(aneh, lower bound di include tapi higher bound di exclude)
 #W=VxN
 weightinputmatrix = np.random.randint(1, 4, size=(jumlahkatadictionary, jumlahhiddenlayer))
@@ -54,118 +56,111 @@ print()
 
 dictionarykata = {}
 #bikin dictionary kata dan one hot encode
-i = 0
-while i < jumlahkatadictionary:
-    dictionarykata[myresult[i][0]] = myresult[i][1]
-    i += 1
+startTime = time.time()
+for i in range(jumlahkatadictionary):
+    #ubah semua one hot encode ke array
+    onehotencodekata = str(myresult[i][1])
+    #format dari [1, 0, 0, 0, 0, 0] jadi 100000 biar gampang di listnya
+    onehotencodekata = onehotencodekata.replace(" ", "")
+    onehotencodekata = onehotencodekata.replace(",", "")
+    onehotencodekata = onehotencodekata.replace("[", "")
+    onehotencodekata = onehotencodekata.replace("]", "")
+    #ubah ke list biar gampang mapping ke array
+    arrayonehotencodekata = np.asarray(list(onehotencodekata))
+    arrayonehotencodekata = arrayonehotencodekata.astype(int)
+
+    dictionarykata[myresult[i][0]] = arrayonehotencodekata
+waktuarrayonehotencode = time.time() - startTime
 
 #print(dictionarykata)
-#formatting one-hot encode ke array
-def onehotencodestrtoarray(onehotencodeinput):
-    onehotencodeinput = str(onehotencodeinput)
-    #format dari [1, 0, 0, 0, 0, 0] jadi 100000 biar gampang di listnya
-    onehotencodeinput = onehotencodeinput.replace(" ", "")
-    onehotencodeinput = onehotencodeinput.replace(",", "")
-    onehotencodeinput = onehotencodeinput.replace("[", "")
-    onehotencodeinput = onehotencodeinput.replace("]", "")
-    #ubah ke list biar gampang mapping ke array
-    arrayonehotencodeinput = np.asarray(list(onehotencodeinput))
-    arrayonehotencodeinput = arrayonehotencodeinput.astype(int)
-    return arrayonehotencodeinput
 
 #CBOW
 #looping di bigdata
-for x in range(len(bigdata)-2):
-    startTime = time.time()
-    print("kata konteks pertama :", bigdata[x])
-    print("kata ke", x+1 ," dari ", len(bigdata))
-    onehotencodekatakontekssatu = dictionarykata[bigdata[x]]
-    arrayonehotencodekatakontekssatu = onehotencodestrtoarray(onehotencodekatakontekssatu)
-    print("one-hot encode kata konteks satu :\n", arrayonehotencodekatakontekssatu)
-    print('Waktu yang dibutuhkan untuk preprocess one hot encode string ke int : ' + str(time.time() - startTime))
-    print()
-    
+for iterasi in range(jumlahIterasi):
+    print("iterasi ke : ",iterasi + 1)
+    for x in range(len(bigdata)-2):
+        startTime = time.time()
+        print("kata konteks pertama :", bigdata[x])
+        print("kata ke", x+1 ," dari ", len(bigdata))
+        onehotencodekatakontekssatu = dictionarykata[bigdata[x]]
+        print("one-hot encode kata konteks satu :\n", onehotencodekatakontekssatu)
+        print('Waktu yang dibutuhkan untuk preprocess one hot encode string ke int : ' + str(time.time() - startTime))
+        print()
+        
 
-    startTime = time.time()
-    print("kata konteks kedua :", bigdata[x+2])
-    print("kata ke", x+3 ," dari ", len(bigdata))
-    onehotencodekatakonteksdua = dictionarykata[bigdata[x+2]]
-    arrayonehotencodekatakonteksdua = onehotencodestrtoarray(onehotencodekatakonteksdua)
-    print("one-hot encode kata konteks dua :\n", arrayonehotencodekatakonteksdua)
-    print('Waktu yang dibutuhkan untuk preprocess one hot encode string ke int : ' + str(time.time() - startTime))
-    print()
+        startTime = time.time()
+        print("kata konteks kedua :", bigdata[x+2])
+        print("kata ke", x+3 ," dari ", len(bigdata))
+        onehotencodekatakonteksdua = dictionarykata[bigdata[x+2]]
+        print("one-hot encode kata konteks dua :\n", onehotencodekatakonteksdua)
+        print('Waktu yang dibutuhkan untuk preprocess one hot encode string ke int : ' + str(time.time() - startTime))
+        print()
 
-    #h = (1 / jumlah kata konteks) * (W)T * sum(onehotencodeinput)  
-    startTime = time.time()
-    hiddenlayer = (1/2) * np.dot(np.transpose(weightinputmatrix),(arrayonehotencodekatakontekssatu + arrayonehotencodekatakonteksdua))
-    print("hidden layer :\n", hiddenlayer)
-    print('Waktu yang dibutuhkan untuk mendapatkan hidden layer : ' + str(time.time() - startTime))
-    print()
+        #h = (1 / jumlah kata konteks) * (W)T * sum(onehotencodeinput)  
+        startTime = time.time()
+        hiddenlayer = (1/2) * np.dot(np.transpose(weightinputmatrix),(onehotencodekatakontekssatu + onehotencodekatakonteksdua))
+        print("hidden layer :\n", hiddenlayer)
+        print('Waktu yang dibutuhkan untuk mendapatkan hidden layer : ' + str(time.time() - startTime))
+        print()
 
-    #uj = (vwj')T * h
-    startTime = time.time()
-    uj = np.dot(np.transpose(weightoutputmatrix),hiddenlayer)
-    print("uj:\n",uj)
-    print('Waktu yang dibutuhkan untuk mendapatkan perkalian weight output dengan hidden layer : ' + str(time.time() - startTime))
-    print()
+        #uj = (vwj')T * h
+        startTime = time.time()
+        uj = np.dot(np.transpose(weightoutputmatrix),hiddenlayer)
+        print("uj:\n",uj)
+        print('Waktu yang dibutuhkan untuk mendapatkan perkalian weight output dengan hidden layer : ' + str(time.time() - startTime))
+        print()
 
-    startTime = time.time()
-    #yj = exp(uj)/sum(exp(uj') untuk j' dari satu sampe V
-    yj = []
-    sumexpujaksen = 0
-    for y in range(jumlahkatadictionary):
-        expuj = np.exp(uj[y])
-        sumexpujaksen = sumexpujaksen + expuj
-        yj.append(expuj)
-    yj = np.asarray(yj).astype(float)/sumexpujaksen
-    print("yj :\n", yj)
-    print('Waktu yang dibutuhkan untuk mendapatkan yj : ' + str(time.time() - startTime))
-    print()
+        startTime = time.time()
+        #yj = exp(uj)/sum(exp(uj') untuk j' dari satu sampe V
+        expuj = np.exp(uj)
+        yj = expuj/np.sum(expuj)
+        print("yj :\n", yj)
+        print('Waktu yang dibutuhkan untuk mendapatkan yj : ' + str(time.time() - startTime))
+        print()
 
 
-    #ej = yj-tj
-    startTime = time.time()
-    onehotencodekatatarget = dictionarykata[bigdata[x+1]]
-    arrayonehotencodekatatarget = onehotencodestrtoarray(onehotencodekatatarget)
-    #print(yj)
-    #print(arrayonehotencodekatatarget)
-    ej = yj - arrayonehotencodekatatarget
-    print("ej :\n", ej)
-    print('Waktu yang dibutuhkan untuk mendapatkan ej : ' + str(time.time() - startTime))
-    print()
+        #ej = yj-tj
+        startTime = time.time()
+        onehotencodekatatarget = dictionarykata[bigdata[x+1]]
+        #print(yj)
+        #print(arrayonehotencodekatatarget)
+        ej = yj - onehotencodekatatarget
+        print("ej :\n", ej)
+        print('Waktu yang dibutuhkan untuk mendapatkan ej : ' + str(time.time() - startTime))
+        print()
 
-    #update weight matrix output
-    #w'ij(new) = w'ij(old) - n.ej.hi
-    #print(ej)
-    startTime = time.time()
-    weightoutputmatrixbaru = weightoutputmatrix - learningRate * np.outer(hiddenlayer,ej)
-    print("updated weight output matrix:\n", weightoutputmatrixbaru)
-    print('Waktu yang dibutuhkan untuk mendapatkan weight output matrix : ' + str(time.time() - startTime))
-    print()
-    #print(weightoutputmatrix)
-    #print(weightoutputmatrixbaru)
+        #update weight matrix output
+        #w'ij(new) = w'ij(old) - n.ej.hi
+        #print(ej)
+        startTime = time.time()
+        weightoutputmatrixbaru = weightoutputmatrix - learningRate * np.outer(hiddenlayer,ej)
+        print("updated weight output matrix:\n", weightoutputmatrixbaru)
+        print('Waktu yang dibutuhkan untuk mendapatkan weight output matrix : ' + str(time.time() - startTime))
+        print()
+        #print(weightoutputmatrix)
+        #print(weightoutputmatrixbaru)
 
-    #update weight matrix input
-    #vwi,c (new) = vwi,c(old) - 1/C * n * (EH)T untuk c dari 1 sampe C
-    startTime = time.time()
-    EH = np.dot(weightoutputmatrix,ej)
-    #print("weight input matrix c1:\n", weightinputmatrix[x])
-    #print("weight input matrix c2:\n", weightinputmatrix[x+2])
-    weightinputmatrix = np.asarray(weightinputmatrix).astype(float)
-    #print(weightinputmatrix[x])
-    #print((1/2) * learningRate * np.transpose(EH))
-    indexkontekskatasatu = list(dictionarykata).index(bigdata[x])
-    indexkontekskatadua = list(dictionarykata).index(bigdata[x+2])
-    weightinputmatrix[indexkontekskatasatu] = weightinputmatrix[indexkontekskatasatu] - (1/2) * learningRate * np.transpose(EH)
-    weightinputmatrix[indexkontekskatadua] = weightinputmatrix[indexkontekskatadua] - (1/2) * learningRate * np.transpose(EH)
-    print("updated weight input matrix:\n", weightinputmatrix)
-    print('Waktu yang dibutuhkan untuk mendapatkan weight output matrix : ' + str(time.time() - startTime))
-    print()
-    #print("weight input matrix baru c1:\n", vwickonteksdua)
-    #print("weight input matrix baru c2:\n", vwickonteksdua)
+        #update weight matrix input
+        #vwi,c (new) = vwi,c(old) - 1/C * n * (EH)T untuk c dari 1 sampe C
+        startTime = time.time()
+        EH = np.dot(weightoutputmatrix,ej)
+        #print("weight input matrix c1:\n", weightinputmatrix[x])
+        #print("weight input matrix c2:\n", weightinputmatrix[x+2])
+        weightinputmatrix = np.asarray(weightinputmatrix).astype(float)
+        #print(weightinputmatrix[x])
+        #print((1/2) * learningRate * np.transpose(EH))
+        indexkontekskatasatu = list(dictionarykata).index(bigdata[x])
+        indexkontekskatadua = list(dictionarykata).index(bigdata[x+2])
+        weightinputmatrix[indexkontekskatasatu] = weightinputmatrix[indexkontekskatasatu] - (1/2) * learningRate * np.transpose(EH)
+        weightinputmatrix[indexkontekskatadua] = weightinputmatrix[indexkontekskatadua] - (1/2) * learningRate * np.transpose(EH)
+        print("updated weight input matrix:\n", weightinputmatrix)
+        print('Waktu yang dibutuhkan untuk mendapatkan weight output matrix : ' + str(time.time() - startTime))
+        print()
+        #print("weight input matrix baru c1:\n", vwickonteksdua)
+        #print("weight input matrix baru c2:\n", vwickonteksdua)
 
-    #ganti weight output matrix lama dengan weight output matrix baru untuk kalkulasi selanjutnya
-    weightoutputmatrix = weightoutputmatrixbaru
+        #ganti weight output matrix lama dengan weight output matrix baru untuk kalkulasi selanjutnya
+        weightoutputmatrix = weightoutputmatrixbaru
 
 
 #input weight matrix input dan output ke dalem database
