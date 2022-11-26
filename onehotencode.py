@@ -76,6 +76,7 @@ startTime = time.time()
 #perlu bikin biar wordnya gak duplicate dulu baru dimasukkin ke dalem database kayaknya
 print("creating unique word dictionary...")
 #bikin database dictionary unique word
+#buat test case
 #bigdata  = "saya sedang bermain budi sedang makan "
 listKata = bigdata.split()
 listKata.sort()
