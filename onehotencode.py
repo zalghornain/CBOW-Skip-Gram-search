@@ -52,7 +52,10 @@ for x in range(len(tupledatabase)):
   stringvalue = stringvalue.replace("/"," ")
   #hapus whitespace di paragraph isi artikel kalo dia double/lebih
   stringvalue = ' '.join(stringvalue.split())
-  bigdata += stringvalue
+
+  #data yang di training (bigdata) cuma ambil 80%
+  if (x <= round((len(tupledatabase)-1) *0.8)) :
+    bigdata += stringvalue
   
   #pindahin data dari database fathan + string yang udah dibersihin double/lebih whitespacenya ke database baru (tempat processing data kita)
   sql = "INSERT INTO text (sumber_url, content) VALUES (%s, %s)"

@@ -206,8 +206,9 @@ for iterasi in range(jumlahIterasi):
         #W'ij(new) = W'ij(old) - n * ej * h
         #ej = sum(ecj)
         ##print(np.transpose(hiddenLayer))
-        ##print("tipe hiddenlayer : ", hiddenLayer.dtype)
-        ##print("tipe ej : ", ej.dtype)
+        #print("tipe hiddenlayer : ", hiddenLayer.dtype)
+        #print("tipe ej : ", ej.dtype)
+        #print("tipe bufferweightoutput : ", bufferweightoutput.dtype)
         startTime = time.time()
         #pakai buffer buat multiply dan outer, biar cepet
         np.multiply(learningRate, np.outer(hiddenLayer , ej, bufferweightoutput), bufferweightoutput)
@@ -225,13 +226,16 @@ for iterasi in range(jumlahIterasi):
         #EH berarti perkalian matrix weight output dengan sum error yang menghasilkan N dimension vector
         #N dimension berarti dia sejumlah hidden layer
         startTime = time.time()
-        ##print("tipe weightoutputmatrix : ", weightoutputmatrix.dtype)
-        ##print("tipe ej : ", ej.dtype)
+        #print("tipe weightoutputmatrix : ", weightoutputmatrix.dtype)
+        #print("tipe ej : ", ej.dtype)
         EH = np.matmul(weightoutputmatrix,ej)
+        #print("tipe EH : ", EH.dtype)
         bagiankananupdateweightinput = learningRate * np.transpose(EH)
+        #print("tipe bagiankananupdateweightinput : ", bagiankananupdateweightinput.dtype)
         #print("tipe weight output matrix : ", weightoutputmatrix.dtype)
         #print("tipe ej : ", ej.dtype)
         #print("tipe EH : ", EH.dtype)
+        #print("tipe weight input matrix : ", weightinputmatrix.dtype)
         indexkatatarget = listdictionarykata.index(bigdata[x])
         weightinputmatrix[indexkatatarget] = weightinputmatrix[indexkatatarget] - bagiankananupdateweightinput
         #print("tipe weight input matrix : ", weightinputmatrix.dtype)
@@ -278,6 +282,12 @@ for iterasi in range(jumlahIterasi):
         #print(weightinputmatrix)
         
 
+
+#np.savetxt('weightinputmatrix2.txt', weightinputmatrix)
+#np.savetxt('weightoutputmatrix2.txt', weightoutputmatrix)
+
+sourcedb.ping(reconnect=True)
+
 #input weight matrix input dan output ke dalem database
 startTime = time.time()
 #print("weight matrix input yang akan di masukkan ke database :\n", weightinputmatrix)
@@ -291,8 +301,8 @@ np.set_printoptions(threshold=sys.maxsize,suppress=True)
 val = ("skip-gram", np.array2string(weightinputmatrix), np.array2string(weightoutputmatrix))
 sourcecursor.execute(sql, val)
 sourcedb.commit()
-#print('Waktu yang dibutuhkan untuk memasukkan weight ke database : ' + str(time.time() - startTime))
-#print()
+print('Waktu yang dibutuhkan untuk memasukkan weight ke database : ' + str(time.time() - startTime))
+print()
 
 
 #input vektor kata ke dalem database setelah semua data selesai di train
@@ -306,9 +316,9 @@ sql = "UPDATE dictionary SET vector_skip_gram = %s WHERE kata = %s"
 val = vektordankata
 sourcecursor.executemany(sql, val)
 sourcedb.commit()
-#print('Waktu yang dibutuhkan untuk memasukkan vektor per kata ke database : ' + str(time.time() - startTime))
-#print()
-#print()
+print('Waktu yang dibutuhkan untuk memasukkan vektor per kata ke database: ' + str(time.time() - startTime))
+print()
+print()
 waktuJalan = (time.time() - startAwalTime)
 
 print('Total waktu ubah one hot encode ke array : ' + str(waktuarrayonehotencode))
