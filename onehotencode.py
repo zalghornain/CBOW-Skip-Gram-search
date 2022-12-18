@@ -50,11 +50,14 @@ for x in range(len(tupledatabase)):
   stringvalue = stringvalue.replace(")"," ")
   stringvalue = stringvalue.replace("@"," ")
   stringvalue = stringvalue.replace("/"," ")
+  stringvalue = stringvalue.replace(":"," ")
   #hapus whitespace di paragraph isi artikel kalo dia double/lebih
   stringvalue = ' '.join(stringvalue.split())
 
   #data yang di training (bigdata) cuma ambil 80%
-  if (x <= round((len(tupledatabase)-1) *0.8)) :
+  #kurang satu karena index mulai dari 0
+  if (x <= round(len(tupledatabase) * 0.8)-1 ) :
+    #print(x)
     bigdata += stringvalue
   
   #pindahin data dari database fathan + string yang udah dibersihin double/lebih whitespacenya ke database baru (tempat processing data kita)
@@ -62,6 +65,7 @@ for x in range(len(tupledatabase)):
   val = (tupledatabase[x][0],stringvalue)
   targetcursor.execute(sql, val)
   targetdb.commit()
+print('jumlah data : ' + str(len(tupledatabase)))
 print('Waktu yang dibutuhkan : ' + str(time.time() - startTime))
 print()
 startTime = time.time()
