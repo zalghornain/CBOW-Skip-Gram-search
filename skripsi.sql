@@ -284,7 +284,7 @@ CREATE TABLE `dictionary` (
   `kata` varchar(255) NOT NULL,
   `one_hot_encode` text NOT NULL,
   `vector_skip_gram` text NOT NULL,
-  `vektor_cbow` text NOT NULL
+  `vector_cbow` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------

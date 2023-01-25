@@ -7,10 +7,10 @@ jumlahhiddenlayer = 400
 #buat test case
 #jumlahhiddenlayer = 3
 
-learningRate = 0.01
+learningRate = 0.5
 
-#jumlahIterasi = 10
-jumlahIterasi = 1
+jumlahIterasi = 1000
+#jumlahIterasi = 6
 
 startAwalTime = time.time()
 
@@ -37,14 +37,14 @@ jumlahkatadictionary = sourcecursor.rowcount
 #W=VxN
 weightinputmatrix = np.random.randint(1, 4, size=(jumlahkatadictionary, jumlahhiddenlayer))
 weightinputmatrix = weightinputmatrix.astype(np.float64)
-#print("Weight Input Matrix :\n", weightinputmatrix)
+print("Weight Input Matrix :\n", weightinputmatrix)
 #print()
 
 #Inisiasi Weight Output (lower bound 1, higher bound 4)
 #W'=NxV
 weightoutputmatrix = np.random.randint(1, 4, size=(jumlahhiddenlayer, jumlahkatadictionary))
 weightoutputmatrix = weightoutputmatrix.astype(np.float64)
-#print("Weight Output Matrix :\n", weightoutputmatrix)
+print("Weight Output Matrix :\n", weightoutputmatrix)
 #print()
 
 #buat test case
@@ -92,19 +92,27 @@ totalwaktupenguranganweightoutput = 0
 totalwaktuupdateweightinput = 0
 listdictionarykata = list(dictionarykata)
 
-bufferweightoutput = np.empty((jumlahhiddenlayer, jumlahkatadictionary))
+bufferweightoutput = np.empty((jumlahhiddenlayer, jumlahkatadictionary)).astype(np.float64)
 
 #Skip-Gram
 #looping di bigdata
-for iterasi in range(jumlahIterasi):
-    print("iterasi ke : ",iterasi + 1)
+loop = True
+iterasi = 0
+while loop == True:
+    iterasi = iterasi + 1
+    listerror= np.empty((0,1),np.float64)
+    listerrorminsatu= np.empty((0,1),np.float64)
+    listerrorplussatu= np.empty((0,1),np.float64)
+    #print("iterasi ke : ",iterasi + 1)
     for x in range(len(bigdata)):
         startTime = time.time()
         #print("kata target :", bigdata[x])
-        print("kata ke", x+1 ," dari ", len(bigdata))
-        onehotencode = dictionarykata[bigdata[x]]
+        #if x== 0 or (x + 1) % 100000 == 0 or x == len(bigdata)-1 :
+        if x== 0 or x == len(bigdata)-1 :
+            print("kata ke", x+1 ," dari ", len(bigdata))
+        onehotencodekatatarget = dictionarykata[bigdata[x]]
         waktuonehotencode = time.time() - startTime
-        #print("one-hot encode kata target :\n", onehotencode)
+        #print("one-hot encode kata target :\n", onehotencodekatatarget)
         #print('Waktu yang dibutuhkan untuk preprocess one hot encode string ke int : ' + str(waktuonehotencode))
         #print()
         totalwaktuonehotencode += waktuonehotencode
@@ -114,11 +122,11 @@ for iterasi in range(jumlahIterasi):
         startTime = time.time()
         ##print("tipe weightinputmatrix : ", weightinputmatrix.dtype)
         ##print("tipe onehotencode : ", onehotencode.dtype)
-        hiddenLayer = np.matmul(np.transpose(weightinputmatrix),onehotencode)
+        hiddenLayer = np.dot(np.transpose(weightinputmatrix),onehotencodekatatarget)
         waktuhiddenlayer = time.time() - startTime
         #print("hidden layer :\n", hiddenLayer)
-        ##print(weightinputmatrix.shape)
-        ##print(onehotencode.shape)
+        #print(weightinputmatrix.shape)
+        #print(onehotencodekatatarget.shape)
         #print('Waktu yang dibutuhkan untuk mendapatkan hidden layer : ' + str(waktuhiddenlayer))
         #print()
         totalwaktuhiddenlayer += waktuhiddenlayer
@@ -128,9 +136,9 @@ for iterasi in range(jumlahIterasi):
         startTime = time.time()
         #print("tipe weightoutputmatrix : ", weightoutputmatrix.dtype)
         #print("tipe hiddenlayer : ", hiddenLayer.dtype)
-        uj = np.matmul(np.transpose(weightoutputmatrix),hiddenLayer)
+        uj = np.dot(np.transpose(weightoutputmatrix),hiddenLayer)
         waktuuj = time.time() - startTime
-        ##print("uj:\n",uj)
+        #print("uj:\n",uj)
         #print(weightoutputmatrix.shape)
         #print(hiddenLayer.shape)
         #print('Waktu yang dibutuhkan untuk mendapatkan perkalian weight output dengan hidden layer : ' + str(waktuuj))
@@ -153,6 +161,7 @@ for iterasi in range(jumlahIterasi):
         totalwaktuyj += waktuyj
 
         ecjcplussatu = 0
+        errorplussatu = 0
         #cek one hot encode kata setelahnya
         #ecj = ycj-tcj
         if x < len(bigdata)-1:
@@ -166,6 +175,10 @@ for iterasi in range(jumlahIterasi):
             #startTime = time.time()
             ecjcplussatu = ycj - onehotencodeplussatu
             waktuecjplussatu = time.time() - startTime
+            #print("ycj : " + str(ycj))
+            #print("one hot encode plus satu : " + str(onehotencodeplussatu))
+            #print("error plus satu : " + str(errorplussatu))
+            
             #print("tipe ecjplussatu : ", ecjcplussatu.dtype)
             #print("ecj dari c + 1:\n", ecjcplussatu)
             #print('Waktu yang dibutuhkan untuk mendapatkan ecj c + 1 : ' + str(waktuecjplussatu))
@@ -173,6 +186,7 @@ for iterasi in range(jumlahIterasi):
             totalwaktuecjplussatu += waktuecjplussatu
 
         ecjcminsatu = 0
+        errorminsatu = 0
         #cek one hot encode kata sebelumnya
         #ecj = ycj-tj
         if x > 0 :
@@ -186,6 +200,9 @@ for iterasi in range(jumlahIterasi):
             #startTime = time.time()
             ecjcminsatu = ycj - onehotencodeminsatu
             waktuecjminsatu = time.time() - startTime
+            #print("ycj : " + str(ycj))
+            #print("one hot encode min satu : " + str(onehotencodeminsatu))
+            #print("error min satu : " + str(errorminsatu))
             #print("tipe ecjminsatu : ", ecjcminsatu.dtype)
             #print("ecj dari c -1 :\n", ecjcminsatu)
             #print('Waktu yang dibutuhkan untuk mendapatkan ecj c - 1 : ' + str(waktuecjminsatu))
@@ -196,6 +213,37 @@ for iterasi in range(jumlahIterasi):
         startTime = time.time()
         ej = ecjcminsatu + ecjcplussatu
         waktuej = time.time() - startTime
+        #print("x = " + str(x))
+        if x > 0 and x < len(bigdata)-1:
+            totalerror = np.linalg.norm((ycj-onehotencodeplussatu)+(ycj-onehotencodeminsatu))
+            errorplus = np.linalg.norm(ycj-onehotencodeplussatu)
+            errormin = np.linalg.norm(ycj-onehotencodeminsatu)
+            listerrorminsatu = np.append(listerrorminsatu,np.array([[errormin]]),axis=0) 
+            listerrorplussatu = np.append(listerrorplussatu,np.array([[errorplus]]),axis=0)
+            #print("x diantara akhir awal")
+            #input()
+            c = 2
+            error = -(c * uj) + c * np.log(np.sum(expuj))
+        elif x == len(bigdata)-1 :
+            totalerror = np.linalg.norm(ycj-onehotencodeminsatu)
+            errormin = np.linalg.norm(ycj-onehotencodeminsatu)
+            listerrorminsatu = np.append(listerrorminsatu,np.array([[errormin]]),axis=0)
+            #print("x diakhir")
+            #input()
+            c = 1
+            error = -(c * uj) + c * np.log(np.sum(expuj))
+        elif x == 0 :
+            totalerror = np.linalg.norm(ycj-onehotencodeplussatu)
+            errorplus = np.linalg.norm(ycj-onehotencodeplussatu)
+            listerrorplussatu = np.append(listerrorplussatu,np.array([[errorplus]]),axis=0)
+            #print("x diawal")
+            #input()
+            c = 1
+            error = -(c * uj) + (c * np.log(np.sum(expuj)))
+        listerror = np.append(listerror,np.array([[totalerror]]),axis=0)
+        #print(np.mean(error))
+        #print(listerror)
+        #input()
         #print("tipe ej : ", ej.dtype)
         #print("ej (sum dari ecj) :\n", ej)
         #print('Waktu yang dibutuhkan untuk mendapatkan sum error : ' + str(waktuej))
@@ -212,6 +260,7 @@ for iterasi in range(jumlahIterasi):
         startTime = time.time()
         #pakai buffer buat multiply dan outer, biar cepet
         np.multiply(learningRate, np.outer(hiddenLayer , ej, bufferweightoutput), bufferweightoutput)
+        #print(bufferweightoutput)
         waktuperkalianweightoutput = time.time() - startTime
         #print("tipe hiddenlayer : ", hiddenLayer.dtype)
         #print("tipe ej : ", ej.dtype)
@@ -228,16 +277,21 @@ for iterasi in range(jumlahIterasi):
         startTime = time.time()
         #print("tipe weightoutputmatrix : ", weightoutputmatrix.dtype)
         #print("tipe ej : ", ej.dtype)
-        EH = np.matmul(weightoutputmatrix,ej)
+        EH = np.dot(weightoutputmatrix,ej)
+        #print(EH)
+        #print(EH.shape)
         #print("tipe EH : ", EH.dtype)
-        bagiankananupdateweightinput = learningRate * np.transpose(EH)
         #print("tipe bagiankananupdateweightinput : ", bagiankananupdateweightinput.dtype)
         #print("tipe weight output matrix : ", weightoutputmatrix.dtype)
         #print("tipe ej : ", ej.dtype)
         #print("tipe EH : ", EH.dtype)
         #print("tipe weight input matrix : ", weightinputmatrix.dtype)
+        #print(weightinputmatrix)
         indexkatatarget = listdictionarykata.index(bigdata[x])
-        weightinputmatrix[indexkatatarget] = weightinputmatrix[indexkatatarget] - bagiankananupdateweightinput
+        weightinputmatrix[indexkatatarget] = weightinputmatrix[indexkatatarget] - learningRate * np.transpose(EH)
+        #print(learningRate * np.transpose(EH))
+        #print(weightinputmatrix)
+        #input()
         #print("tipe weight input matrix : ", weightinputmatrix.dtype)
         ##print("jumlah dictionary kata : ", len(dictionarykata))
         ##print("ukuran weight input matrix : ", weightinputmatrix.shape)
@@ -280,7 +334,24 @@ for iterasi in range(jumlahIterasi):
         #weightoutputmatrix = weightoutputbaru
         #print(weightoutputmatrix)
         #print(weightinputmatrix)
+        #input()
         
+    
+    ratarataerrorminsatu = np.mean(listerrorminsatu)
+    ratarataerrorplussatu = np.mean(listerrorplussatu)
+    ratarataerror = np.mean(listerror)
+    print("rata-rata error : ", ratarataerror)
+    #print(listerror)
+    print("rata-rata error min satu : ", ratarataerrorminsatu)
+    print("rata-rata error plus satu : ", ratarataerrorplussatu)
+    print("selisih error : " , str(ratarataerrorminsatu - ratarataerrorplussatu))
+    #if ratarataerrorminsatu == ratarataerrorplussatu or iterasi == 1000:
+    #    loop == False
+    if iterasi % 50 == 0 :
+        input()
+    if (ratarataerrorminsatu - ratarataerrorplussatu) <= (0.01 or -0.01):
+        loop == False
+      
 
 
 #np.savetxt('weightinputmatrix2.txt', weightinputmatrix)

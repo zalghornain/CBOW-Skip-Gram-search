@@ -1,6 +1,8 @@
+import random
 import mysql.connector
 import unidecode
 import time
+import re
 
 startAwalTime = time.time()
 startTime = startAwalTime
@@ -33,10 +35,28 @@ targetcursor = targetdb.cursor()
 #inisiasi string kosong untuk campuran semua string nanti
 bigdata = ""
 
+#list index dokumen yang udah dipilih
+sampledDokumen = []
+
+#stopwords
+with open('stopwords.txt', 'r') as file:
+    stopwords = file.read().split()
+#print(stopwords[1])
+#input()
+
 print("cleaning double whitespace...")
 #tuple database isinya [sumber artikel(link)][isi artikel]
-for x in range(len(tupledatabase)):
+#for x in range(len(tupledatabase)):
+for iterasi in range(71):
 
+  x = random.randint(0, len(tupledatabase)-1)
+  while x in sampledDokumen :
+    x = random.randint(0, len(tupledatabase)-1)
+  sampledDokumen.append(x)
+  #print(iterasi)
+  #print(x)
+  #print(sampledDokumen)
+  
   #ubah data character unicode
   stringvalue = unidecode.unidecode(tupledatabase[x][1])
   stringvalue = stringvalue.lower()
@@ -51,9 +71,36 @@ for x in range(len(tupledatabase)):
   stringvalue = stringvalue.replace("@"," ")
   stringvalue = stringvalue.replace("/"," ")
   stringvalue = stringvalue.replace(":"," ")
-  #hapus whitespace di paragraph isi artikel kalo dia double/lebih
-  stringvalue = ' '.join(stringvalue.split())
+  stringvalue = stringvalue.replace("*"," ")
+  stringvalue = stringvalue.replace("["," ")
+  stringvalue = stringvalue.replace("]"," ")
+  stringvalue = stringvalue.replace("?"," ")
+  stringvalue = stringvalue.replace("-"," ")
+  stringvalue = stringvalue.replace("%"," ")
+  stringvalue = stringvalue.replace("$"," ")
+  stringvalue = stringvalue.replace("!"," ")
+  stringvalue = stringvalue.replace("<"," ")
+  stringvalue = stringvalue.replace(">"," ")
+  stringvalue = stringvalue.replace("="," ")
+  stringvalue = stringvalue.replace("|"," ")
+  stringvalue = stringvalue.replace("_"," ")
+  stringvalue = stringvalue.replace(";"," ")
 
+  #hapus stopwords
+  for nomor in range(len(stopwords)) :
+    stringvalue = re.sub('\\b'+stopwords[nomor]+'\\b', '', stringvalue)
+
+  stringvaluesplit = stringvalue.split()
+  #print(stringvaluesplit)
+  realstringvalue = []
+  #hapus kata yang isinya number doang
+  for z in range(len(stringvaluesplit)) :
+    if stringvaluesplit[z].isdigit() == False:
+      realstringvalue.append(stringvaluesplit[z])
+  #print(realstringvalue)
+  #hapus whitespace di paragraph isi artikel kalo dia double/lebih
+  stringvalue = ' '.join(realstringvalue)
+  
   #data yang di training (bigdata) cuma ambil 80%
   #kurang satu karena index mulai dari 0
   if (x <= round(len(tupledatabase) * 0.8)-1 ) :

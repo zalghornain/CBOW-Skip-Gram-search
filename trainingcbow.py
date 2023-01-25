@@ -7,10 +7,10 @@ jumlahhiddenlayer = 400
 #buat test case
 #jumlahhiddenlayer = 3
 
-learningRate = 0.01
+learningRate = 0.05
 
-#jumlahIterasi = 10
-jumlahIterasi = 1
+#jumlahIterasi = 50
+#jumlahIterasi = 2
 
 startAwalTime = time.time()
 
@@ -81,12 +81,18 @@ bufferweightoutput = np.empty((jumlahhiddenlayer, jumlahkatadictionary)).astype(
 
 #CBOW
 #looping di bigdata
-for iterasi in range(jumlahIterasi):
+loop = True
+iterasi = 0
+while loop == True :
+    listerror= np.empty((0,1),np.float64)
+    #print(listerror)
     print("iterasi ke : ",iterasi + 1)
+    iterasi += 1
     for x in range(len(bigdata)-2):
         startTime = time.time()
-        print("kata konteks pertama :", bigdata[x])
-        print("kata ke", x+1 ," dari ", len(bigdata))
+        if x== 0 or x == len(bigdata)-1 :
+            print("kata konteks pertama :", bigdata[x])
+            print("kata ke", x+1 ," dari ", len(bigdata))
         onehotencodekatakontekssatu = dictionarykata[bigdata[x]]
         #print("one-hot encode kata konteks satu :\n", onehotencodekatakontekssatu)
         #print('Waktu yang dibutuhkan untuk preprocess one hot encode string ke int : ' + str(time.time() - startTime))
@@ -94,8 +100,9 @@ for iterasi in range(jumlahIterasi):
         
 
         startTime = time.time()
-        print("kata konteks kedua :", bigdata[x+2])
-        print("kata ke", x+3 ," dari ", len(bigdata))
+        if x== 0 or x == len(bigdata)-1 :
+            print("kata konteks kedua :", bigdata[x+2])
+            print("kata ke", x+3 ," dari ", len(bigdata))
         onehotencodekatakonteksdua = dictionarykata[bigdata[x+2]]
         #print("one-hot encode kata konteks dua :\n", onehotencodekatakonteksdua)
         #print('Waktu yang dibutuhkan untuk preprocess one hot encode string ke int : ' + str(time.time() - startTime))
@@ -130,6 +137,10 @@ for iterasi in range(jumlahIterasi):
         #print(yj)
         #print(arrayonehotencodekatatarget)
         ej = yj - onehotencodekatatarget
+        error = np.linalg.norm(yj-onehotencodekatatarget)
+        listerror = np.append(listerror,np.array([[error]]),axis=0)
+        #print(listerror)
+        #input()
         #print("ej :\n", ej)
         #print('Waktu yang dibutuhkan untuk mendapatkan ej : ' + str(time.time() - startTime))
         #print()
@@ -169,6 +180,14 @@ for iterasi in range(jumlahIterasi):
         startTime = time.time()
         weightoutputmatrix -= bufferweightoutput
 
+    #print(listerror)
+    ratarataerror = np.mean(listerror)
+    print("rata-rata error : ", ratarataerror)
+    if ratarataerror <= 0.001 or time.time() - startAwalTime >= 86400:
+        loop = False
+
+
+sourcedb.ping(reconnect=True)
 
 #input weight matrix input dan output ke dalem database
 startTime = time.time()
@@ -199,6 +218,9 @@ val = vektordankata
 sourcecursor.executemany(sql, val)
 sourcedb.commit()
 print('Waktu yang dibutuhkan untuk memasukkan vektor per kata ke database : ' + str(time.time() - startTime))
+print()
+
+print('Total iterasi : ' + str(iterasi))
 print()
 
 waktuJalan = (time.time() - startAwalTime)

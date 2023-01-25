@@ -36,6 +36,7 @@ print()
 katainput = katainput.split()
 #print(len(katainput))
 dictcosinesimilarity = {}
+dictcosinesimilarity2 = {}
 katavalid = []
 for i in range(len(katainput)):
   vectorkata = dictionaryvectorkata.get(katainput[i])
@@ -49,11 +50,15 @@ for i in range(len(katainput)):
     for j, (k, v) in enumerate(dictionaryvectorkata.items()):
       hasildotproduct = np.dot(vectorkata, v)
       magnitudev = np.linalg.norm(v)
-      dictcosinesimilarity[k] =+ hasildotproduct / (magnitudev * magnitudevectorkata)
-      #pas di kata terakhir di rata2in
-      if i == len(katainput)-1:
+      if i == 0 :
+        dictcosinesimilarity[k] = (hasildotproduct / (magnitudev * magnitudevectorkata))
+      #pas di kata terakhir sum terus di rata2in
+      elif i == len(katainput)-1:
+        dictcosinesimilarity[k] = dictcosinesimilarity.get(k) + (hasildotproduct / (magnitudev * magnitudevectorkata))
         #rata-ratain berdasarkan jumlah kata yang ketemu di dictionary
         dictcosinesimilarity[k] = dictcosinesimilarity.get(k) / len(katavalid)
+        #print(dictcosinesimilarity.get(k))
+        #input()
   else :
     print("kata " + "\"" + katainput[i] + "\"" + " tidak ditemukan")
     print()

@@ -80,8 +80,9 @@ for i in range(len(listtext)):
   duasatu = fivetopdict[1][0] + " " + katainput + " " + fivetopdict[0][0]
   print(satudua)
   print(duasatu)
-  jumlahkemunculansatudua = len(re.findall('\\b'+ satudua +'\\b',listtext[i][1]))  
-  jumlahkemunculanduasatu = len(re.findall('\\b'+ duasatu +'\\b',listtext[i][1]))
+  #harusnya * nya di hapus sebelum training
+  jumlahkemunculansatudua = len(re.findall('\\b'+ satudua.replace("*","\*") +'\\b',listtext[i][1]))  
+  jumlahkemunculanduasatu = len(re.findall('\\b'+ duasatu.replace("*","\*") +'\\b',listtext[i][1]))
   #taro [katainputvalid : jumlah kemunculan] pada dictionarykatavalidrelevan
   dictionarykatavalidrelevan[satudua] = (jumlahkemunculansatudua)
   dictionarykatavalidrelevan[duasatu] = (jumlahkemunculanduasatu)
