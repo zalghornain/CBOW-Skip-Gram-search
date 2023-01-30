@@ -56,9 +56,6 @@ startAwalTime = time.time()
 katainput = katainput.split()
 #print(katainput)
 #print(len(katainput))
-dictcosinesimilarity = {}
-dictcosinesimilarity2 = {}
-katavalid = []
 #print(len(katainput))
 if len(katainput) != 2 :
     print("jumlah kata yang dimasukkan tidak sesuai, silahkan jalankan ulang program")
@@ -70,8 +67,8 @@ onehotencodekata2 = dictionaryonehotencodekata.get(katainput[1])
 #print(vectorkata)
 #input()
 if onehotencodekata is not None and onehotencodekata2 is not None:
-  katavalid.append(katainput[0])
-  katavalid.append(katainput[1])
+  katainput[0]
+  katainput[1]
   #print(onehotencodekata.shape)
   hiddenlayer = (1/2) * np.dot(np.transpose(matrixweightinput),(onehotencodekata + onehotencodekata2))
   uj = np.dot(np.transpose(matrixweightoutput),hiddenlayer)
@@ -80,9 +77,21 @@ if onehotencodekata is not None and onehotencodekata2 is not None:
   #print(yj)
   #print(np.max(yj))
   #print(np.argmax(yj))
-  katatengah = list(dictionaryonehotencodekata)[np.argmax(yj)]
+  listonehotencodekata = list(dictionaryonehotencodekata)
+  katatengah = listonehotencodekata[np.argmax(yj)]
+  listkatatengah = []
+  i=0
+  while i <= 5 :
+    i+=1
+    listkatatengah.append(listonehotencodekata[np.argmax(yj)])
+    #print(yj)
+    yj[np.argmax(yj)] = 0
+    #print(yj)
+    #input()
   print("kata tengah merupakan : ", katatengah)
-  #input()
+  print("5 kata tengah tertinggi merupakan : ", listkatatengah)
+  print("tekan enter")
+  input()
 elif onehotencodekata is None :
   print("kata " + "\"" + katainput[0] + "\"" + " tidak ditemukan")
   print()
@@ -115,8 +124,8 @@ for i in range(len(listtext)):
   #cari kata valid di kolom content dengan menggunakan regular expression
   #print(len(re.findall('\\b'+katavalid[j]+'\\b',listtext[i][1])))
   #itung jumlah kemunculan
-  satudua = katavalid[0] + " " + katatengah + " " + katavalid[1]
-  duasatu = katavalid[1] + " " + katatengah + " " + katavalid[0]
+  satudua = katainput[0] + " " + katatengah + " " + katainput[1]
+  duasatu = katainput[1] + " " + katatengah + " " + katainput[0]
   #print(satudua)
   #print(duasatu)
   jumlahkemunculansatudua = len(re.findall('\\b'+ satudua +'\\b',listtext[i][1]))  

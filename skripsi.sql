@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 08, 2022 at 05:11 AM
--- Server version: 10.4.22-MariaDB
--- PHP Version: 8.1.2
+-- Waktu pembuatan: 30 Jan 2023 pada 17.25
+-- Versi server: 10.4.24-MariaDB
+-- Versi PHP: 8.1.6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -26,7 +26,7 @@ USE `dbcrawl`;
 -- --------------------------------------------------------
 
 --
--- Table structure for table `crawling`
+-- Struktur dari tabel `crawling`
 --
 
 CREATE TABLE `crawling` (
@@ -41,7 +41,7 @@ CREATE TABLE `crawling` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `forms`
+-- Struktur dari tabel `forms`
 --
 
 CREATE TABLE `forms` (
@@ -53,7 +53,7 @@ CREATE TABLE `forms` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `images`
+-- Struktur dari tabel `images`
 --
 
 CREATE TABLE `images` (
@@ -65,7 +65,7 @@ CREATE TABLE `images` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `linking`
+-- Struktur dari tabel `linking`
 --
 
 CREATE TABLE `linking` (
@@ -78,7 +78,7 @@ CREATE TABLE `linking` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `list`
+-- Struktur dari tabel `list`
 --
 
 CREATE TABLE `list` (
@@ -90,17 +90,17 @@ CREATE TABLE `list` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `page_information`
+-- Struktur dari tabel `page_information`
 --
 
 CREATE TABLE `page_information` (
   `id_pagecontent` int(11) NOT NULL,
   `base_url` text NOT NULL,
   `html5` tinyint(1) NOT NULL,
-  `title` text NOT NULL,
-  `description` text NOT NULL,
-  `keywords` text NOT NULL,
-  `content_text` text NOT NULL,
+  `title` text DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `keywords` text DEFAULT NULL,
+  `content_text` text DEFAULT NULL,
   `hot_url` tinyint(1) NOT NULL,
   `model_crawl` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -108,7 +108,7 @@ CREATE TABLE `page_information` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `script_resource`
+-- Struktur dari tabel `script_resource`
 --
 
 CREATE TABLE `script_resource` (
@@ -120,7 +120,7 @@ CREATE TABLE `script_resource` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `style_resource`
+-- Struktur dari tabel `style_resource`
 --
 
 CREATE TABLE `style_resource` (
@@ -132,7 +132,7 @@ CREATE TABLE `style_resource` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tables`
+-- Struktur dari tabel `tables`
 --
 
 CREATE TABLE `tables` (
@@ -146,113 +146,113 @@ CREATE TABLE `tables` (
 --
 
 --
--- Indexes for table `crawling`
+-- Indeks untuk tabel `crawling`
 --
 ALTER TABLE `crawling`
   ADD PRIMARY KEY (`id_crawling`);
 
 --
--- Indexes for table `forms`
+-- Indeks untuk tabel `forms`
 --
 ALTER TABLE `forms`
   ADD PRIMARY KEY (`id_form`);
 
 --
--- Indexes for table `images`
+-- Indeks untuk tabel `images`
 --
 ALTER TABLE `images`
   ADD PRIMARY KEY (`id_image`);
 
 --
--- Indexes for table `linking`
+-- Indeks untuk tabel `linking`
 --
 ALTER TABLE `linking`
   ADD PRIMARY KEY (`id_linking`);
 
 --
--- Indexes for table `list`
+-- Indeks untuk tabel `list`
 --
 ALTER TABLE `list`
   ADD PRIMARY KEY (`id_list`);
 
 --
--- Indexes for table `page_information`
+-- Indeks untuk tabel `page_information`
 --
 ALTER TABLE `page_information`
   ADD PRIMARY KEY (`id_pagecontent`);
 
 --
--- Indexes for table `script_resource`
+-- Indeks untuk tabel `script_resource`
 --
 ALTER TABLE `script_resource`
   ADD PRIMARY KEY (`id_script`);
 
 --
--- Indexes for table `style_resource`
+-- Indeks untuk tabel `style_resource`
 --
 ALTER TABLE `style_resource`
   ADD PRIMARY KEY (`id_style`);
 
 --
--- Indexes for table `tables`
+-- Indeks untuk tabel `tables`
 --
 ALTER TABLE `tables`
   ADD PRIMARY KEY (`id_table`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT untuk tabel yang dibuang
 --
 
 --
--- AUTO_INCREMENT for table `crawling`
+-- AUTO_INCREMENT untuk tabel `crawling`
 --
 ALTER TABLE `crawling`
   MODIFY `id_crawling` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `forms`
+-- AUTO_INCREMENT untuk tabel `forms`
 --
 ALTER TABLE `forms`
   MODIFY `id_form` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `images`
+-- AUTO_INCREMENT untuk tabel `images`
 --
 ALTER TABLE `images`
   MODIFY `id_image` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `linking`
+-- AUTO_INCREMENT untuk tabel `linking`
 --
 ALTER TABLE `linking`
   MODIFY `id_linking` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `list`
+-- AUTO_INCREMENT untuk tabel `list`
 --
 ALTER TABLE `list`
   MODIFY `id_list` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `page_information`
+-- AUTO_INCREMENT untuk tabel `page_information`
 --
 ALTER TABLE `page_information`
   MODIFY `id_pagecontent` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `script_resource`
+-- AUTO_INCREMENT untuk tabel `script_resource`
 --
 ALTER TABLE `script_resource`
   MODIFY `id_script` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `style_resource`
+-- AUTO_INCREMENT untuk tabel `style_resource`
 --
 ALTER TABLE `style_resource`
   MODIFY `id_style` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `tables`
+-- AUTO_INCREMENT untuk tabel `tables`
 --
 ALTER TABLE `tables`
   MODIFY `id_table` int(11) NOT NULL AUTO_INCREMENT;
@@ -265,7 +265,7 @@ USE `skripsi`;
 -- --------------------------------------------------------
 
 --
--- Table structure for table `big_data`
+-- Struktur dari tabel `big_data`
 --
 
 CREATE TABLE `big_data` (
@@ -276,7 +276,7 @@ CREATE TABLE `big_data` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `dictionary`
+-- Struktur dari tabel `dictionary`
 --
 
 CREATE TABLE `dictionary` (
@@ -290,7 +290,7 @@ CREATE TABLE `dictionary` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `text`
+-- Struktur dari tabel `text`
 --
 
 CREATE TABLE `text` (
@@ -299,50 +299,77 @@ CREATE TABLE `text` (
   `content` longtext NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `weight`
+--
+
+CREATE TABLE `weight` (
+  `id` int(11) NOT NULL,
+  `metode` longtext NOT NULL,
+  `matrix_weight_input` longtext NOT NULL,
+  `matrix_weight_output` longtext NOT NULL,
+  `kata_unik` int(11) NOT NULL,
+  `hidden_layer` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 --
 -- Indexes for dumped tables
 --
 
 --
--- Indexes for table `big_data`
+-- Indeks untuk tabel `big_data`
 --
 ALTER TABLE `big_data`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `dictionary`
+-- Indeks untuk tabel `dictionary`
 --
 ALTER TABLE `dictionary`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `kata` (`kata`);
 
 --
--- Indexes for table `text`
+-- Indeks untuk tabel `text`
 --
 ALTER TABLE `text`
   ADD PRIMARY KEY (`id`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- Indeks untuk tabel `weight`
+--
+ALTER TABLE `weight`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT untuk tabel yang dibuang
 --
 
 --
--- AUTO_INCREMENT for table `big_data`
+-- AUTO_INCREMENT untuk tabel `big_data`
 --
 ALTER TABLE `big_data`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `dictionary`
+-- AUTO_INCREMENT untuk tabel `dictionary`
 --
 ALTER TABLE `dictionary`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `text`
+-- AUTO_INCREMENT untuk tabel `text`
 --
 ALTER TABLE `text`
   MODIFY `id` int(255) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT untuk tabel `weight`
+--
+ALTER TABLE `weight`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
