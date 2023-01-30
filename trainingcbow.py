@@ -183,7 +183,7 @@ while loop == True :
     #print(listerror)
     ratarataerror = np.mean(listerror)
     print("rata-rata error : ", ratarataerror)
-    if ratarataerror <= 0.001 or time.time() - startAwalTime >= 86400:
+    if ratarataerror <= 0.001 or time.time() - startAwalTime >= 10800:
         loop = False
 
 
@@ -195,11 +195,11 @@ print("weight matrix input yang akan di masukkan ke database :\n", weightinputma
 print()
 print("weight matrix output yang akan di masukkan ke database :\n", weightoutputmatrix)
 print()
-sql = "INSERT INTO weight (metode, matrix_weight_input, matrix_weight_output) VALUES (%s,%s,%s)"
+sql = "INSERT INTO weight (metode, matrix_weight_input, matrix_weight_output, kata_unik, hidden_layer) VALUES (%s,%s,%s,%s,%s)"
 #set threshold sebelum di simpen ke database biar gak di truncate
 #supress biar dia gak di singkat jadi e-01
 np.set_printoptions(threshold=sys.maxsize,suppress=True)
-val = ("cbow", np.array2string(weightinputmatrix), np.array2string(weightoutputmatrix))
+val = ("cbow", np.array2string(weightinputmatrix.flatten()), np.array2string(weightoutputmatrix.flatten()),jumlahkatadictionary,jumlahhiddenlayer)
 sourcecursor.execute(sql, val)
 sourcedb.commit()
 print('Waktu yang dibutuhkan untuk memasukkan weight ke database : ' + str(time.time() - startTime))
