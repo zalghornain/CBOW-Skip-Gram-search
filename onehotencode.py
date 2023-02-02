@@ -47,7 +47,7 @@ with open('stopwords.txt', 'r') as file:
 print("cleaning double whitespace...")
 #tuple database isinya [sumber artikel(link)][isi artikel]
 #for x in range(len(tupledatabase)):
-for iterasi in range(71):
+for iterasi in range(70):
 
   x = random.randint(0, len(tupledatabase)-1)
   while x in sampledDokumen :
