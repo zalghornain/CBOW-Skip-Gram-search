@@ -103,9 +103,9 @@ for iterasi in range(71):
   
   #data yang di training (bigdata) cuma ambil 80%
   #kurang satu karena index mulai dari 0
-  if (x <= round(len(tupledatabase) * 0.8)-1 ) :
+  #if (x <= round(len(tupledatabase) * 0.8)-1 ) :
     #print(x)
-    bigdata += stringvalue
+  bigdata += stringvalue
   
   #pindahin data dari database fathan + string yang udah dibersihin double/lebih whitespacenya ke database baru (tempat processing data kita)
   sql = "INSERT INTO text (sumber_url, content) VALUES (%s, %s)"

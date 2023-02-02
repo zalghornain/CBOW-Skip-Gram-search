@@ -114,7 +114,7 @@ nilaidokumen = 0
 #pake 20% data sisa doang
 #kurang satu karena index mulai dari 0
 #cek lagi range atas harusnya di exclude bukan di include
-del listtext[0:round(len(listtext) * 0.8)-1]
+#del listtext[0:round(len(listtext) * 0.8)-1]
 
 #print(len(listtext))
 for i in range(len(listtext)):
