@@ -2,6 +2,7 @@ import mysql.connector
 import numpy as np
 import time
 import re
+import random
 
 katainput = input('Masukkan kata \n')
 print()
@@ -88,10 +89,10 @@ if onehotencodekata is not None and onehotencodekata2 is not None:
     yj[np.argmax(yj)] = 0
     #print(yj)
     #input()
-  print("kata tengah merupakan : ", katatengah)
-  print("5 kata tengah tertinggi merupakan : ", listkatatengah)
-  print("tekan enter")
-  input()
+  #print("kata tengah merupakan : ", katatengah)
+  #print("5 kata tengah tertinggi merupakan : ", listkatatengah)
+  #print("tekan enter")
+  #input()
 elif onehotencodekata is None :
   print("kata " + "\"" + katainput[0] + "\"" + " tidak ditemukan")
   print()
@@ -144,10 +145,17 @@ for i in range(len(listtext)):
   dictionarykemunculan[listtext[i][0]] = dictionarykatavalidrelevan
   dictionarykatavalidrelevan= {}
 
+listdictionarykemunculan = list(dictionarykemunculan)
 limadokumenpalingrelevan = sorted(dictionarykemunculan.items(), key=lambda item: item[1]["nilai dokumen"], reverse=True)[0:5]
 for i in range(len(limadokumenpalingrelevan)):
-  print(limadokumenpalingrelevan[i])
-  #print("Hasil dokumen ranking", i+1,":", limadokumenpalingrelevan[i][0])
+  if limadokumenpalingrelevan[i][1]["nilai dokumen"] == 0 :
+    #print("Hasil dokumen :", limadokumenpalingrelevan[random.randrange(1,70)][0])
+    #print("masuk")
+    print("Hasil dokumen :", listdictionarykemunculan[random.randrange(1,70)])
+  else :
+    print("Hasil dokumen :", limadokumenpalingrelevan[i][0])
+    #print(limadokumenpalingrelevan[i])
+  
 print()
 
 waktuJalan = (time.time() - startAwalTime)
