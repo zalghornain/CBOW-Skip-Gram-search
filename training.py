@@ -7,7 +7,7 @@ jumlahhiddenlayer = 400
 #buat test case
 #jumlahhiddenlayer = 3
 
-learningRate = 0.5
+learningRate = 0.05
 
 jumlahIterasi = 1000
 #jumlahIterasi = 6
