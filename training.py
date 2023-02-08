@@ -7,7 +7,7 @@ jumlahhiddenlayer = 400
 #buat test case
 #jumlahhiddenlayer = 3
 
-learningRate = 0.05
+learningRate = 0.7
 
 jumlahIterasi = 1000
 #jumlahIterasi = 6
@@ -103,7 +103,7 @@ while loop == True:
     listerror= np.empty((0,1),np.float64)
     listerrorminsatu= np.empty((0,1),np.float64)
     listerrorplussatu= np.empty((0,1),np.float64)
-    #print("iterasi ke : ",iterasi + 1)
+    print("iterasi ke : ",iterasi)
     for x in range(len(bigdata)):
         startTime = time.time()
         #print("kata target :", bigdata[x])
@@ -215,9 +215,10 @@ while loop == True:
         waktuej = time.time() - startTime
         #print("x = " + str(x))
         if x > 0 and x < len(bigdata)-1:
-            totalerror = np.linalg.norm((ycj-onehotencodeplussatu)+(ycj-onehotencodeminsatu))
+            #totalerror = np.linalg.norm((ycj-onehotencodeplussatu)+(ycj-onehotencodeminsatu))
             errorplus = np.linalg.norm(ycj-onehotencodeplussatu)
             errormin = np.linalg.norm(ycj-onehotencodeminsatu)
+            totalerror = errorplus + errormin
             listerrorminsatu = np.append(listerrorminsatu,np.array([[errormin]]),axis=0) 
             listerrorplussatu = np.append(listerrorplussatu,np.array([[errorplus]]),axis=0)
             #print("x diantara akhir awal")
@@ -341,16 +342,14 @@ while loop == True:
     ratarataerrorplussatu = np.mean(listerrorplussatu)
     ratarataerror = np.mean(listerror)
     print("rata-rata error : ", ratarataerror)
-    #print(listerror)
+    print("error : ", error)
     print("rata-rata error min satu : ", ratarataerrorminsatu)
     print("rata-rata error plus satu : ", ratarataerrorplussatu)
-    print("selisih error : " , str(ratarataerrorminsatu - ratarataerrorplussatu))
+    #print("selisih error : " , str(ratarataerrorminsatu - ratarataerrorplussatu))
     #if ratarataerrorminsatu == ratarataerrorplussatu or iterasi == 1000:
     #    loop == False
-    if iterasi % 50 == 0 :
-        input()
-    if (ratarataerrorminsatu - ratarataerrorplussatu) <= (0.01 or -0.01):
-        loop == False
+    if time.time() - startAwalTime >= 10800:
+        loop = False
       
 
 
@@ -414,7 +413,7 @@ print('Total waktu pengurangan weight output : ' + str(totalwaktupenguranganweig
 print()
 print('Total waktu update weight input : ' + str(totalwaktuupdateweightinput))
 print()
-print('Jumlah Iterasi : ' + str(jumlahIterasi))
+print('Jumlah Iterasi : ' + str(iterasi))
 print()
 print()
 print('Waktu total yang dibutuhkan : ' + str(waktuJalan))
