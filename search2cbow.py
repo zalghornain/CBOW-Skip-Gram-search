@@ -5,6 +5,7 @@ import re
 import random
 
 katainput = input('Masukkan kata \n')
+startAwalTime = time.time()
 print()
 
 sourcedb = mysql.connector.connect(
@@ -50,7 +51,7 @@ for i in range(len(myresult)):
   onehotencode = np.asarray(list(onehotencode)).astype(np.float64)
   dictionaryonehotencodekata[myresult[i][0]] = onehotencode
 
-startAwalTime = time.time()
+
 #print()
 #print(katainput.split())
 #print()
