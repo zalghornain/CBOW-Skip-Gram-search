@@ -148,8 +148,6 @@ startTime = time.time()
 
 print("saving unique word to database...")
 #masukkin kata unique ke dalem database
-#KELEMAHAN, CUMA BISA DIJALANIN SEKALI, KALO BUAT UPDATE MASUKKIN KATA UNIQUE BARU GAK BISA, KARENA DIA NGECHECK UNIQUENYA YANG SEKARANG LAGI DI PROSES DOANG KATANYA (DARI DATABASE CRAWL)
-#HARUS DI CLEAR DULU DATA DICTIONARYNYA
 sql = "INSERT INTO dictionary (kata , one_hot_encode) VALUES (%s, %s)"
 val = kataUnikDanOneHotEncode
 targetcursor.executemany(sql, val)
