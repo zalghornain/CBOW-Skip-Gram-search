@@ -22,7 +22,7 @@ data perlu di train terlebih dahulu dengan metode yang sama sebelum melakukan se
 
 search dilakukan dengan exact string match (regular expression)
 
-- **run search.py untuk mencari dokumen relevan dengan satu kata input dengan menggunakan metode Skip-Gram**
+- **run search.py untuk mencari dokumen relevan dengan menggunakan metode Skip-Gram**
 
   search.py menerima satu kata input
   
@@ -30,7 +30,7 @@ search dilakukan dengan exact string match (regular expression)
     1. "(kata relevan 1) (kata input) (kata relevan 2)"
     2. "(kata relevan 2) (kata input) (kata relevan 1)"
     
-- **run search2cbow.py untuk mencari dokumen relevan dengan dua kata input dengan menggunakan metode CBOW 2 kata**
+- **run search2cbow.py untuk mencari dokumen relevan dengan menggunakan metode CBOW 2 kata**
 
   search2cbow.py menerima dua kata input
   
@@ -38,7 +38,7 @@ search dilakukan dengan exact string match (regular expression)
     1. "(kata input 1) (kata relevan) (kata input 2)"
     2. "(kata input 2) (kata relevan) (kata input 1)"
     
-- **run search4cbow.py untuk mencari dokumen relevan dengan empat kata input dengan menggunakan metode CBOW 4 kata**
+- **run search4cbow.py untuk mencari dokumen relevan dengan menggunakan metode CBOW 4 kata**
 
   search4cbow.py menerima empat kata input
 
