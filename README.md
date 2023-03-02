@@ -47,4 +47,4 @@ search dilakukan dengan exact string match (regular expression)
 
   pada search4cbow.py searching akan dilakukan dengan mencari kata:
   
-    "(kata input 1) (kata input 1) (kata relevan) (kata input 3) (kata input 4)"
+    "(kata input 1) (kata input 2) (kata relevan) (kata input 3) (kata input 4)"
