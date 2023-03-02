@@ -25,8 +25,6 @@ dictionaryonehotencodekata = {}
 
 sourcecursor.execute("SELECT matrix_weight_input,matrix_weight_output,kata_unik,hidden_layer FROM weight WHERE metode='cbow4kata' GROUP BY ID = (SELECT MAX(ID) FROM weight)")
 weight = sourcecursor.fetchone()
-#print(weight[0][0:10])
-#input()
 matrixweightinput = weight[0]
 matrixweightinput = matrixweightinput.replace("[", "'")
 matrixweightinput = matrixweightinput.replace("]", "'")
@@ -39,10 +37,6 @@ matrixweightoutput = matrixweightoutput.replace("]", "'")
 #weight = hiddenlayer x kataunik
 matrixweightoutput = np.fromstring(matrixweightoutput.strip('\'') ,sep=' ').reshape((weight[3], weight[2]))
 
-#print(matrixweightinput)
-#print(matrixweightoutput)
-#input()
-
 for i in range(len(myresult)):
   onehotencode = myresult[i][1]
   onehotencode = onehotencode.replace(" ", "")
@@ -53,13 +47,7 @@ for i in range(len(myresult)):
   dictionaryonehotencodekata[myresult[i][0]] = onehotencode
 
 startAwalTime = time.time()
-#print()
-#print(katainput.split())
-#print()
 katainput = katainput.split()
-#print(katainput)
-#print(len(katainput))
-#print(len(katainput))
 if len(katainput) != 4 :
     print("jumlah kata yang dimasukkan tidak sesuai, silahkan jalankan ulang program")
     print()
@@ -69,19 +57,13 @@ onehotencodekata = dictionaryonehotencodekata.get(katainput[0])
 onehotencodekata2 = dictionaryonehotencodekata.get(katainput[1])
 onehotencodekata3 = dictionaryonehotencodekata.get(katainput[2])
 onehotencodekata4 = dictionaryonehotencodekata.get(katainput[3])
-#print(vectorkata)
-#input()
 if onehotencodekata is not None and onehotencodekata2 is not None:
   katainput[0]
   katainput[1]
-  #print(onehotencodekata.shape)
   hiddenlayer = (1/4) * np.dot(np.transpose(matrixweightinput),(onehotencodekata + onehotencodekata2 + onehotencodekata3 +onehotencodekata4))
   uj = np.dot(np.transpose(matrixweightoutput),hiddenlayer)
   expuj = np.exp(uj - np.max(uj))
   yj = expuj/np.sum(expuj)
-  #print(yj)
-  #print(np.max(yj))
-  #print(np.argmax(yj))
   listonehotencodekata = list(dictionaryonehotencodekata)
   katatengah = listonehotencodekata[np.argmax(yj)]
   listkatatengah = []
@@ -89,10 +71,7 @@ if onehotencodekata is not None and onehotencodekata2 is not None:
   while i <= 5 :
     i+=1
     listkatatengah.append(listonehotencodekata[np.argmax(yj)])
-    #print(yj)
     yj[np.argmax(yj)] = 0
-    #print(yj)
-    #input()
   print("kata tengah merupakan : ", katatengah)
   print("5 kata tengah tertinggi merupakan : ", listkatatengah)
   #print("tekan enter")
@@ -124,32 +103,16 @@ listtext = sourcecursor.fetchall()
 #listtext[index][kolom]
 nilaidokumen = 0
 
-#pake 20% data sisa doang
-#kurang satu karena index mulai dari 0
-#cek lagi range atas harusnya di exclude bukan di include
-#del listtext[0:round(len(listtext) * 0.8)-1]
-
-#print(len(listtext))
 for i in range(len(listtext)):
-  #print("sumber ke : ", i + 1, listtext[i][0])
-  #print(katavalid[0])
-  #print(katavalid[1])
   #cari kata valid di kolom content dengan menggunakan regular expression
-  #print(len(re.findall('\\b'+katavalid[j]+'\\b',listtext[i][1])))
   #itung jumlah kemunculan
   katagabungan = katainput[0] + " " + katainput[1] + " " + katatengah + " " + katainput[2] + " " + katainput[3]
-  #print(katagabungan)
-  #print(duasatu)
   jumlahkemunculangabungan = len(re.findall('\\b'+ katagabungan +'\\b',listtext[i][1]))  
   #taro [katainputvalid : jumlah kemunculan] pada dictionarykatavalidrelevan
   dictionarykatavalidrelevan[katagabungan] = (jumlahkemunculangabungan)
   nilaidokumen = 1 * jumlahkemunculangabungan
   dictionarykatavalidrelevan["nilai dokumen"] = nilaidokumen
-  #print(nilaidokumen)
 
-  #print(dictionarykatavalidrelevan)
-  #print()
-  #print()
   #bikin dictionary nested [sumber : {kata input : jumlah, kata relevan : jumlah, nilai dokumen : nilai}]
   dictionarykemunculan[listtext[i][0]] = dictionarykatavalidrelevan
   dictionarykatavalidrelevan= {}
@@ -157,13 +120,10 @@ for i in range(len(listtext)):
 listdictionarykemunculan = list(dictionarykemunculan)
 limadokumenpalingrelevan = sorted(dictionarykemunculan.items(), key=lambda item: item[1]["nilai dokumen"], reverse=True)[0:5]
 r = list(range(5))
-#print(r)
-#input()
 random.shuffle(r)
 for i in r:
   if limadokumenpalingrelevan[i][1]["nilai dokumen"] == 0 :
     #print("Hasil dokumen :", limadokumenpalingrelevan[random.randrange(1,70)][0])
-    #print("masuk")
     print("Hasil dokumen :", listdictionarykemunculan[random.randrange(1,70)])
   else :
     #print("Hasil dokumen :", limadokumenpalingrelevan[i][0])

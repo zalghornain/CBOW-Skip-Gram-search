@@ -41,21 +41,15 @@ sampledDokumen = []
 #stopwords
 with open('stopwords.txt', 'r') as file:
     stopwords = file.read().split()
-#print(stopwords[1])
-#input()
 
 print("cleaning double whitespace...")
 #tuple database isinya [sumber artikel(link)][isi artikel]
-#for x in range(len(tupledatabase)):
 for iterasi in range(70):
 
   x = random.randint(0, len(tupledatabase)-1)
   while x in sampledDokumen :
     x = random.randint(0, len(tupledatabase)-1)
   sampledDokumen.append(x)
-  #print(iterasi)
-  #print(x)
-  #print(sampledDokumen)
   
   #ubah data character unicode
   stringvalue = unidecode.unidecode(tupledatabase[x][1])
@@ -91,20 +85,15 @@ for iterasi in range(70):
     stringvalue = re.sub('\\b'+stopwords[nomor]+'\\b', '', stringvalue)
 
   stringvaluesplit = stringvalue.split()
-  #print(stringvaluesplit)
   realstringvalue = []
   #hapus kata yang isinya number doang
   for z in range(len(stringvaluesplit)) :
     if stringvaluesplit[z].isdigit() == False:
       realstringvalue.append(stringvaluesplit[z])
-  #print(realstringvalue)
+
   #hapus whitespace di paragraph isi artikel kalo dia double/lebih
   stringvalue = ' '.join(realstringvalue)
   
-  #data yang di training (bigdata) cuma ambil 80%
-  #kurang satu karena index mulai dari 0
-  #if (x <= round(len(tupledatabase) * 0.8)-1 ) :
-    #print(x)
   bigdata += stringvalue
   
   #pindahin data dari database fathan + string yang udah dibersihin double/lebih whitespacenya ke database baru (tempat processing data kita)
@@ -130,8 +119,6 @@ startTime = time.time()
 #perlu bikin biar wordnya gak duplicate dulu baru dimasukkin ke dalem database kayaknya
 print("creating unique word dictionary...")
 #bikin database dictionary unique word
-#buat test case
-#bigdata  = "saya sedang bermain budi sedang makan "
 listKata = bigdata.split()
 listKata.sort()
 listKataUnik = list(dict.fromkeys(listKata))
@@ -144,7 +131,6 @@ startTime = time.time()
 #tuple berisi (kataUnik, one_hot_encode)
 kataUnikDanOneHotEncode = []
 #kita gak perlu peduli ordered atau nggaknya, one hot encode + kata langsung di ram
-#print(len(setkata))
 print("one-hot-encoding words...")
 onehotencode = []
 i = 0
@@ -153,7 +139,6 @@ for x in range(len(listKataUnik)):
     onehotencode.append(0)
     i+=1
   onehotencode[x] = 1
-  #print(onehotencode)
   kataUnikDanOneHotEncode.append((listKataUnik[x], str(onehotencode)))
   i=0
   onehotencode = []
@@ -163,8 +148,6 @@ startTime = time.time()
 
 print("saving unique word to database...")
 #masukkin kata unique ke dalem database
-#KELEMAHAN, CUMA BISA DIJALANIN SEKALI, KALO BUAT UPDATE MASUKKIN KATA UNIQUE BARU GAK BISA, KARENA DIA NGECHECK UNIQUENYA YANG SEKARANG LAGI DI PROSES DOANG KATANYA (DARI DATABASE CRAWL)
-#HARUS DI CLEAR DULU DATA DICTIONARYNYA
 sql = "INSERT INTO dictionary (kata , one_hot_encode) VALUES (%s, %s)"
 val = kataUnikDanOneHotEncode
 targetcursor.executemany(sql, val)

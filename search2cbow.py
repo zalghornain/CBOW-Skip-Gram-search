@@ -38,10 +38,6 @@ matrixweightoutput = matrixweightoutput.replace("]", "'")
 #weight = hiddenlayer x kataunik
 matrixweightoutput = np.fromstring(matrixweightoutput.strip('\'') ,sep=' ').reshape((weight[3], weight[2]))
 
-#print(matrixweightinput)
-#print(matrixweightoutput)
-#input()
-
 for i in range(len(myresult)):
   onehotencode = myresult[i][1]
   onehotencode = onehotencode.replace(" ", "")
@@ -52,13 +48,7 @@ for i in range(len(myresult)):
   dictionaryonehotencodekata[myresult[i][0]] = onehotencode
 
 
-#print()
-#print(katainput.split())
-#print()
 katainput = katainput.split()
-#print(katainput)
-#print(len(katainput))
-#print(len(katainput))
 if len(katainput) != 2 :
     print("jumlah kata yang dimasukkan tidak sesuai, silahkan jalankan ulang program")
     print()
@@ -66,19 +56,13 @@ if len(katainput) != 2 :
 
 onehotencodekata = dictionaryonehotencodekata.get(katainput[0])
 onehotencodekata2 = dictionaryonehotencodekata.get(katainput[1])
-#print(vectorkata)
-#input()
 if onehotencodekata is not None and onehotencodekata2 is not None:
   katainput[0]
   katainput[1]
-  #print(onehotencodekata.shape)
   hiddenlayer = (1/2) * np.dot(np.transpose(matrixweightinput),(onehotencodekata + onehotencodekata2))
   uj = np.dot(np.transpose(matrixweightoutput),hiddenlayer)
   expuj = np.exp(uj - np.max(uj))
   yj = expuj/np.sum(expuj)
-  #print(yj)
-  #print(np.max(yj))
-  #print(np.argmax(yj))
   listonehotencodekata = list(dictionaryonehotencodekata)
   katatengah = listonehotencodekata[np.argmax(yj)]
   listkatatengah = []
@@ -86,10 +70,7 @@ if onehotencodekata is not None and onehotencodekata2 is not None:
   while i <= 5 :
     i+=1
     listkatatengah.append(listonehotencodekata[np.argmax(yj)])
-    #print(yj)
     yj[np.argmax(yj)] = 0
-    #print(yj)
-    #input()
   #print("kata tengah merupakan : ", katatengah)
   #print("5 kata tengah tertinggi merupakan : ", listkatatengah)
   #print("tekan enter")
@@ -113,23 +94,11 @@ listtext = sourcecursor.fetchall()
 #listtext[index][kolom]
 nilaidokumen = 0
 
-#pake 20% data sisa doang
-#kurang satu karena index mulai dari 0
-#cek lagi range atas harusnya di exclude bukan di include
-#del listtext[0:round(len(listtext) * 0.8)-1]
-
-#print(len(listtext))
 for i in range(len(listtext)):
-  #print("sumber ke : ", i + 1, listtext[i][0])
-  #print(katavalid[0])
-  #print(katavalid[1])
   #cari kata valid di kolom content dengan menggunakan regular expression
-  #print(len(re.findall('\\b'+katavalid[j]+'\\b',listtext[i][1])))
   #itung jumlah kemunculan
   satudua = katainput[0] + " " + katatengah + " " + katainput[1]
   duasatu = katainput[1] + " " + katatengah + " " + katainput[0]
-  #print(satudua)
-  #print(duasatu)
   jumlahkemunculansatudua = len(re.findall('\\b'+ satudua +'\\b',listtext[i][1]))  
   jumlahkemunculanduasatu = len(re.findall('\\b'+ duasatu +'\\b',listtext[i][1]))
   #taro [katainputvalid : jumlah kemunculan] pada dictionarykatavalidrelevan
@@ -137,11 +106,7 @@ for i in range(len(listtext)):
   dictionarykatavalidrelevan[duasatu] = (jumlahkemunculanduasatu)
   nilaidokumen = 1 * jumlahkemunculansatudua + 1 * jumlahkemunculanduasatu
   dictionarykatavalidrelevan["nilai dokumen"] = nilaidokumen
-  #print(nilaidokumen)
 
-  #print(dictionarykatavalidrelevan)
-  #print()
-  #print()
   #bikin dictionary nested [sumber : {kata input : jumlah, kata relevan : jumlah, nilai dokumen : nilai}]
   dictionarykemunculan[listtext[i][0]] = dictionarykatavalidrelevan
   dictionarykatavalidrelevan= {}
@@ -151,7 +116,6 @@ limadokumenpalingrelevan = sorted(dictionarykemunculan.items(), key=lambda item:
 for i in range(len(limadokumenpalingrelevan)):
   if limadokumenpalingrelevan[i][1]["nilai dokumen"] == 0 :
     #print("Hasil dokumen :", limadokumenpalingrelevan[random.randrange(1,70)][0])
-    #print("masuk")
     print("Hasil dokumen :", listdictionarykemunculan[random.randrange(1,70)])
   else :
     #print("Hasil dokumen :", limadokumenpalingrelevan[i][0])
