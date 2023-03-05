@@ -21,4 +21,4 @@ sistem terbagi menjadi 3 bagian : pembersihan data, training data dan pencarian 
   
 -  search4cbow.py
 
-### [cara kerja program](https://github.com/zalghornain/skripsi/blob/master/docs/manual.md)
+### [cara kerja program](https://github.com/zalghornain/skripsi/blob/master/docs/readme.md)
