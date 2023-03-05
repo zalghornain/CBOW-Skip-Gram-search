@@ -1,1 +1,0 @@
-lembar pengesahan dan lembar orisinalitas belum di update
