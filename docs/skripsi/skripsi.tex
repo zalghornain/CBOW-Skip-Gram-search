@@ -27,6 +27,11 @@
 \usepackage{pdfpages}
 \usepackage{caption}
 \usepackage{fancyhdr}
+\usepackage{draftwatermark}
+\usepackage{tikz}
+\SetWatermarkText{\tikz{\node[opacity=0.1]{\includegraphics{Logo-unj-buat-watermark.png}};}}
+\SetWatermarkAngle{0}
+\SetWatermarkScale{0.75}
 
 %bikin item di table center secara vertical
 %\renewcommand\tabularxcolumn[1]{m{#1}}
@@ -120,7 +125,7 @@
 
 \cleardoublepage
 \phantomsection
-
+\DraftwatermarkOptions{stamp=false}
 \addcontentsline{toc}{section}{LEMBAR PERSETUJUAN HASIL SIDANG SKRIPSI}
 %\section*{LEMBAR PERSETUJUAN HASIL SIDANG SKRIPSI}
 \includepdf[pages={1}]{lembar_persetujuan_hasil_sidang_skripsi_lengkap.pdf}
@@ -199,6 +204,7 @@
 \linespread{1.6}\selectfont
 \cleardoublepage
 \phantomsection
+\DraftwatermarkOptions{stamp=true}
 \section*{KATA PENGANTAR}
 \addcontentsline{toc}{section}{KATA PENGANTAR}
 
